@@ -29,7 +29,7 @@ Supervisor:
 Team: Management Logistic Committee (MLC) 2019
 - Ferdian Ilham (FER)
 - Rio Junior (RJR)
-- Angga Prihantoro (PRI)
+- Angga Prihantoro (PRI) (Branch Owner)
 
 
 
