@@ -27,7 +27,7 @@ Supervisor:
 - Iga Narendra Pramawijaya (AND) (Software, 2018)
 
 Team: Management Logistic Committee (MLC) 2019
-- Ferdian Ilham (FER)
+- Ferdian Ilham (FER) (Branch Owner)
 - Rio Junior (RJR)
 - Angga Prihantoro (PRI)
 
