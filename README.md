@@ -24,7 +24,7 @@ Deskripsi :
 
 
 Supervisor:
-- Iga Narendra Pramawijaya (AND) (Software, 2018)
+- Iga Narendra Pramawijaya (AND) (Software, 2018) (Branch Owner)
 
 Team: Management Logistic Committee (MLC) 2019
 - Ferdian Ilham (FER)
