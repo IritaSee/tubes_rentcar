@@ -1,17 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 
+void regis_user();
+void login_user();
 void login_admin();
+void menu_user();
 void menu_admin();
 void pause();
+void cls();
 
-char nama[100], pass[100];
 int pil;
+char nama[100], pass[100];
+FILE *dataread;
 
 struct
 { int tanggal, bulan, tahun; }tgl;
 
-FILE *dataread;
+struct
+{ char nama[100], pass[100]; }akun;
+
 
 main()
 {
@@ -23,18 +30,53 @@ main()
     scanf("%d",&pil); getchar();
     switch(pil)
     {
-        case 1: ;break;
-        case 2: ;break;
+        case 1: regis_user();break;
+        case 2: login_user();break;
         case 3: login_admin();break;
-        case 4: exit(1);break;
+        case 4: system("exit");break;
         default:
 		{printf("\nPilihan Salah, silahkan pilih lagi!!!\n");pause();main();break;}
     }
     
 }
 
-void pause()
-{ system("pause"); }
+void cls(){ system("cls"); }
+void pause(){ system("pause"); }
+
+void regis_user(){
+	cls();
+	dataread=fopen("akunuser.dat","ab");
+	printf("REGISTRASI AKUN\n");
+	printf("Username\t: ");gets(akun.nama);
+	printf("Password\t: ");gets(akun.pass);
+	fwrite(&akun,sizeof(akun),1,dataread);
+	fclose(dataread);
+	main();
+	
+}
+
+void login_user(){
+	cls();
+	dataread=fopen("akunuser.dat","rb");
+	printf("\t=========================\n");
+	printf("\t      Menu Login User\n");
+	printf("\t=========================\n");
+	printf("Username\t: ");gets(nama);
+	printf("Password\t: ");gets(pass);
+	while(fread(&akun,sizeof(akun),1,dataread)==1){
+		if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0){
+			printf("welcome\n");fclose(dataread);pause();
+			menu_user();
+		}
+		else printf("login gagal\n");fclose(dataread);pause();main();
+	}
+}
+
+void menu_user(){
+	//ini menu user
+	cls();
+	printf("MENU USER:\n1. \n2. \n3. \n");
+}
 
 void login_admin()
 {
@@ -54,6 +96,7 @@ void login_admin()
 	pause();
 	main();
 }
+
 void menu_admin()
 {
 	system("cls");
@@ -98,5 +141,9 @@ void menu_admin()
 			default: {printf("\nPilihan salah!!!, silahkan coba lagi\n");pause();menu_admin();break;}
 	}
 }
+
+
+
+
 
 
