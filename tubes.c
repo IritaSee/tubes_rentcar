@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+
+// Deklarasi variabel (ikut PRI)
 void regis_user();
 void login_user();
 void login_admin();
@@ -14,13 +16,10 @@ char nama[100], pass[100];
 FILE *dataread;
 
 struct
-{ int tanggal, bulan, tahun; }tgl;
+{ int tanggal, bulan, tahun; 
+}tgl;
 
-struct
-{ char nama[100], pass[100]; }akun;
-
-
-main()
+main() // dari sini ke bawah ada conflict, aku gabung punya FER sama PRI, soalnya FER frontendnya lebih bagus dan PRI backend nya mulai keliatan
 {
     system("cls");
     printf("\t==============================\n");
@@ -38,7 +37,21 @@ main()
 		{printf("\nPilihan Salah, silahkan pilih lagi!!!\n");pause();main();break;}
     }
     
+
+struct
+{
+	char nama[100], pass[100];
+}akun;
+
+void pause(){
+	system("pause");
 }
+
+void cls(){
+	system("cls");
+}
+
+
 
 void cls(){ system("cls"); }
 void pause(){ system("pause"); }
