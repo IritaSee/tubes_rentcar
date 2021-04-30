@@ -10,10 +10,16 @@ void menu_user();
 void menu_admin();
 void pause();
 void cls();
+void add_motor();
+void add_mobil();
 
 int pil;
 char nama[100], pass[100];
 FILE *dataread;
+struct
+{
+	int stok_mobil, stok_motor;
+}add;
 
 struct
 { int tanggal, bulan, tahun; 
@@ -36,7 +42,7 @@ main() // dari sini ke bawah ada conflict, aku gabung punya FER sama PRI, soalny
         default:
 		{printf("\nPilihan Salah, silahkan pilih lagi!!!\n");pause();main();break;}
     }
-    
+}
 
 struct
 {
@@ -50,11 +56,6 @@ void pause(){
 void cls(){
 	system("cls");
 }
-
-
-
-void cls(){ system("cls"); }
-void pause(){ system("pause"); }
 
 void regis_user(){
 	cls();
@@ -88,7 +89,39 @@ void login_user(){
 void menu_user(){
 	//ini menu user
 	cls();
-	printf("MENU USER:\n1. \n2. \n3. \n");
+	printf("MENU USER:\n1. Tampilkan dan Pilih Jadwal\n2. \n3. \nPilihan = ");
+	scanf("%d",&pil);getchar();
+	switch(pil)
+	{
+		case 1 : 
+		{
+			printf("Pilih Jenis Kendaraan\n 1.Mobil\n2.Motor\nPilihan : ");scanf("%d",&pil);
+			switch(pil)
+			{
+				case 1 :
+				{
+					dataread = fopen("data.dat","rb");
+					while((fread(&add,sizeof(add),1,dataread))==1)
+					{
+					}
+					printf("Jumlah Stok Mobil : %d",add.stok_mobil);
+					fclose(dataread);rewind(dataread);
+					break;
+				}
+				case 2 :
+				{
+					dataread = fopen("data.dat","rb");
+					while((fread(&add,sizeof(add),1,dataread))==1)
+					{
+					}
+					printf("Jumlah Stok Motor : %d",add.stok_motor);
+					fclose(dataread);rewind(dataread);
+					break;	
+				}
+			}
+			
+		}
+	}
 }
 
 void login_admin()
@@ -109,6 +142,8 @@ void login_admin()
 	pause();
 	main();
 }
+//your code goes here... semangaat!!!
+// SIAAPP BANGGG!!!
 
 void menu_admin()
 {
@@ -116,7 +151,7 @@ void menu_admin()
     printf("\t========================\n");
 	printf("\t     D'Rent' Admin\n");
 	printf("\t========================\n");
-	printf("\n1. Update Tanggal\n2. Exit\nPilhan: ");
+	printf("\n1. Update Tanggal\n2. Tambah Kendaraan\n3.Exit\nPilihan: ");
 	scanf("%d",&pil);getchar();
 	switch(pil)
 	    {
@@ -148,15 +183,45 @@ void menu_admin()
 				fclose(dataread);
 				pause();
 				menu_admin();
+				break;
 	   		}
-	   		
-			case 2: main();
-			default: {printf("\nPilihan salah!!!, silahkan coba lagi\n");pause();menu_admin();break;}
-	}
+			case 2:
+			{
+				system("cls");
+				printf("\t========================\n");
+				printf("\t     Pilih Kendaraan\n");
+				printf("\t========================\n");
+				printf("1. Mobil\n2. Motor\nPilihan : ");scanf("%d",&pil);getchar();
+				switch(pil)
+				{
+					case 1 : add_mobil();break;
+					case 2 : add_motor();break;
+				}
+				break;
+			}
+			case 3: main();break;
+			default: printf("\nPilihan salah!!!, silahkan coba lagi\n");pause();menu_admin();break;
+		}
 }
 
 
 
+void add_mobil()
+{
+	dataread = fopen("data.dat","ab");
+	printf("Masukan Jumlah Stok Mobil : ");
+	scanf("%d",&add.stok_mobil);
+	fwrite(&add,sizeof(add),1,dataread);
+	fclose(dataread);rewind(dataread);
+	menu_admin();
+}
 
-
-
+void add_motor()
+{
+	dataread = fopen("data.dat","ab");
+	printf("Masukan Jumlah Stok Motor : ");
+	scanf("%d",&add.stok_motor);
+	fwrite(&add,sizeof(add),1,dataread);
+	fclose(dataread);rewind(dataread);
+	menu_admin();
+}
