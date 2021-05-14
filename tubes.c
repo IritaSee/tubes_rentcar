@@ -10,15 +10,20 @@ void menu_admin();
 void pause();
 void cls();
 
-int i, pil, pil2, ubah, mob, mot, dur1, dur2, dur3, durtot, durtot2, durtot3, tambahdurasi;
+int i, j, o, pil, pil2, ubah, mob, mot, dur1, dur2, dur3, durtot, durtot2, durtot3, tambahdurasi;
 char nama[100], pass[100];
-struct{ int jadwal, stok_mobil, stok_motor; } add;
+struct{ int jadwal, stok_mobil, stok_motor; } add, add2[100], add3[100];
 struct{ int tanggal, bulan, tahun; } tgl;
 struct
 	{	
 		char nama[100], pass[100], sewaan[100]; 
-  		int mobil, motor, status, jadwal, tanggal, bulan, tahun; 
+  		int mobil, motor, status, jadwal, tanggal, bulan, tahun, durasi; 
 	} akun;
+struct
+	{	
+		char nama[100], pass[100], sewaan[100]; 
+		int mobil, motor, status, jadwal, tanggal, bulan, tahun, durasi; 
+	} data2[100], temp;
 
 FILE *dataread; FILE *dataread2; FILE *dataread3; FILE *datadel;
 
@@ -54,6 +59,7 @@ void regis_user()
     printf("\t===================\n");
 	printf("\nUsername\t: ");gets(akun.nama);
 	printf("Password\t: ");gets(akun.pass);
+	akun.status=0;
 	fwrite(&akun,sizeof(akun),1,dataread);
 	printf("\nAkun Berhasil dibuat !!!\n"); pause();
 	fclose(dataread);
@@ -74,7 +80,7 @@ void login_user()
 		if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0)
 		{
 			printf("welcome\n");pause();
-			fseek(dataread,-sizeof(akun),SEEK_CUR);
+			fclose(dataread);
 			menu_user();break;
 		}
 	}
@@ -87,13 +93,19 @@ void menu_user()
 	dataread3=fopen("tanggal.dat","rb");
 	while(fread(&tgl,sizeof(tgl),1,dataread3)==1);
 	fclose(dataread3);
-	printf("MENU USER:\n1. Sewa Kendaraan\n2. Cek Status Sewa\n3. Perpanjang Durasi Sewa\n4. Pengembalian Barang\n5. Kembali\nPilihan = ");
+	printf("MENU USER:\n1. Sewa Kendaraan\n2. Cek Status Sewa\n3. Perpanjang Durasi Sewa\n4. Pengembalian Kendaraan\n5. Kembali\nPilihan = ");
 	scanf("%d",&pil);getchar();
 	switch(pil)
 	{
 		case 1 : 
 		{
 			cls();
+			dataread=fopen("data.dat","rb+");
+			while(fread(&akun,sizeof(akun),1,dataread)==1)
+			{
+				if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0)
+				{ fseek(dataread,-sizeof(akun),SEEK_CUR); break; }
+			}
 			printf("\t===============\n");
 			printf("\t   Menu Sewa\n");
 			printf("\t===============\n\n");
@@ -114,37 +126,52 @@ void menu_user()
 			{
 				case 1 :
 				{
-					akun.mobil=1; akun.status=1; akun.jadwal==pil; strcpy(akun.sewaan, "Mobil");
+					akun.mobil=1; akun.status=1; akun.jadwal=pil; strcpy(akun.sewaan, "Mobil");
 					akun.tanggal=tgl.tanggal+2; akun.bulan=tgl.bulan; akun.tahun=tgl.tahun;
 					add.stok_mobil=add.stok_mobil-1;
+					dur1=tgl.tanggal;
+					dur2=tgl.bulan * 30;
+					dur3=tgl.tahun * 365;
+					akun.durasi=dur1+dur2+dur3;
 					fwrite(&add, sizeof(add), 1, dataread2);
 					fwrite(&akun, sizeof(akun), 1, dataread);
 					fclose(dataread); fclose(dataread2);
-					printf("Anda berhasil menyewa mobil selama 2 hari !!!)");
+					printf("Anda berhasil menyewa mobil selama 2 hari !!!\n"); pause();
 					menu_user(); break;
 				}
 				case 2 :
 				{
-					akun.motor=1; akun.status=1; akun.jadwal==pil; strcpy(akun.sewaan, "Motor");
+					akun.motor=1; akun.status=1; akun.jadwal=pil; strcpy(akun.sewaan, "Motor");
 					akun.tanggal=tgl.tanggal+2; akun.bulan=tgl.bulan; akun.tahun=tgl.tahun;
 					add.stok_motor=add.stok_motor-1;
+					dur1=tgl.tanggal;
+					dur2=tgl.bulan * 30;
+					dur3=tgl.tahun * 365;
+					akun.durasi=dur1+dur2+dur3;
 					fwrite(&add, sizeof(add), 1, dataread2);
 					fwrite(&akun, sizeof(akun), 1, dataread);
 					fclose(dataread); fclose(dataread2);
-					printf("Anda berhasil menyewa motor selama 2 hari !!!)");
+					printf("Anda berhasil menyewa motor selama 2 hari !!!\n"); pause();
 					menu_user(); break;
 				}
 				case 3 : menu_user(); break;
 				default: printf("\nPilihan salah!!!, silahkan coba lagi\n");pause();menu_user();break;
 			}
+		}
 		case 2 :
 		{
 			cls();
+			dataread=fopen("data.dat","rb+");
+			while(fread(&akun,sizeof(akun),1,dataread)==1)
+			{
+				if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0)
+				{ fseek(dataread,-sizeof(akun),SEEK_CUR); break; }
+			}
 			printf("\t=================\n");
 			printf("\t   Status Sewa\n");
 			printf("\t=================\n\n");
 			printf("== Tanggal Saat ini %d - %d - %d ==\n", tgl.tanggal, tgl.bulan, tgl.tahun);
-			
+			if (akun.status==0) { printf("\nSaat ini Anda belum menyewa kendaraan\n"); pause();menu_user(); }
 			dur1=tgl.tanggal;
 			dur2=tgl.bulan * 30;
 			dur3=tgl.tahun * 365;
@@ -156,15 +183,23 @@ void menu_user()
 			durtot2=dur1 + dur2 + dur3;
 			
 			durtot3=durtot2 - durtot;
-			printf("Sisa Durasi Sewa mu %d hari lagi!!\n", durtot3); pause();
+			printf("\nSisa Durasi Sewa mu %d hari lagi!!\n", durtot3); pause();
+			fclose(dataread);
 			menu_user(); break;
 		}
 		case 3 :
 		{
 			system("cls");
+			dataread=fopen("data.dat","rb+");
+			while(fread(&akun,sizeof(akun),1,dataread)==1)
+			{
+				if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0)
+				{ fseek(dataread,-sizeof(akun),SEEK_CUR); break; }
+			}
 			printf("\t======================\n");
 			printf("\t  Tambah Durasi Sewa \n");
 			printf("\t======================\n\n");
+			if (akun.status==0) { printf("\nSaat ini Anda belum menyewa kendaraan\n"); pause();menu_user(); }
 			// Memposisikan Indikator File
 			dataread=fopen("data.dat","rb+");
 			while(fread(&akun,sizeof(akun),1,dataread)==1){
@@ -177,11 +212,62 @@ void menu_user()
 			pause(); menu_user(); break;
 		}
 		case 4 :
+		{
+			i=0, o=0;
+			system("cls");
+			dataread=fopen("data.dat","rb+");
+			dataread2=fopen("stok.dat","rb");
+			datadel=fopen("stok2.dat","wb");
+			while(fread(&akun,sizeof(akun),1,dataread)==1)
+			{
+				if(strcmp(nama,akun.nama)==0 && strcmp(pass,akun.pass)==0)
+				{ fseek(dataread,-sizeof(akun), SEEK_CUR); break; }
+			}
+			while(fread(&add,sizeof(add),1,dataread2)==1)
+			{
+				if(add.jadwal==akun.jadwal)
+				{ break; }
+			}
+			
+			fseek(dataread2, 0, SEEK_SET);
+			while (fread(&add3[o],sizeof(add3[o]),1, dataread2)==1)
+			{ 
+				if (add3[o].jadwal!=akun.jadwal)
+				{ fwrite(&add3[o], sizeof(add3[o]), 1, datadel); } 
+			} 
+			fclose(dataread2); fclose(datadel); 
+			remove("stok.dat"); rename("stok2.dat","stok.dat"); 
+			
+			printf("\t=======================\n");
+			printf("\t  Pengembalian Manual \n");
+			printf("\t=======================\n\n");
+			if (akun.status==0) { printf("\nSaat ini Anda belum menyewa kendaraan\n"); pause();menu_user(); }
+			
+			if (akun.mobil==1)
+			{ 
+				akun.mobil=akun.mobil-1;
+				add.stok_mobil=add.stok_mobil+1;
+				printf("Mobil yang Anda pinjam berhasil dikembalikan\n");
+			}
+			if (akun.motor==1)
+			{ 
+				akun.motor=akun.motor-1; 
+				add.stok_motor=add.stok_motor+1;
+				printf("Motor yang Anda pinjam berhasil dikembalikan\n");
+			}
+			akun.status=0; 
+			add.jadwal=akun.jadwal;
+			dataread2=fopen("stok.dat","ab");
+			fwrite(&add, sizeof(add), 1, dataread2);fclose(dataread2);
+			fwrite(&akun, sizeof(akun), 1, dataread);fclose(dataread);
+			pause(); menu_user(); break;
+		}
 		case 5 : main(); break;
 		default: printf("\nPilihan salah!!!, silahkan coba lagi\n"); pause(); menu_user(); break;
-		}
 	}
 }
+
+
 
 void login_admin()
 {
@@ -244,22 +330,23 @@ void menu_admin()
 	   		}
 			case 2:
 			{
+				i=0;
 				system("cls");
 				printf("\t===========================\n");
 				printf("\t     Ubah Stok Kendaraan\n");
 				printf("\t===========================\n");
-				add.stok_mobil=0; add.stok_motor=0;
 				printf("1. Senin\n2. Rabu\n3. Sabtu\n4. Minggu\nPilih Jadwal : "); scanf("%d",&pil);
 				dataread = fopen("stok.dat","rb");
 				
 				// Baca Stok
-				while(fread(&add,sizeof(add),1,dataread)==1)
+				while(fread(&add2[i],sizeof(add2[i]),1,dataread)==1)
 				{
-					if(pil==add.jadwal)
+					if(pil==add2[i].jadwal)
 					{ 
-					  printf("\nJumlah Stok Saat ini : \n1. Mobil : %d\n", add.stok_mobil); 
-					  printf("2. Motor : %d\n", add.stok_motor); 
+					  printf("\nJumlah Stok Saat ini : \n1. Mobil : %d\n", add2[i].stok_mobil); 
+					  printf("2. Motor : %d\n", add2[i].stok_motor); break;
 					}
+					i++;
 				}
 				
 				
@@ -270,40 +357,44 @@ void menu_admin()
 					case 1 : 
 					{
 						printf("Ubah jumlah stok mobil menjadi : ");
-						scanf("%d",&mob); mot=add.stok_motor;
+						scanf("%d",&add2[i].stok_mobil);
+						
 						datadel = fopen("stok2.dat", "wb");
-						fseek(dataread, 0, SEEK_SET);  
-						while (fread(&add,sizeof(add),1, dataread)==1)
+						fseek(dataread, 0, SEEK_SET); 
+						int o=0; 
+						while (fread(&add3[o],sizeof(add3[o]),1, dataread)==1)
 						{ 
-							if (add.jadwal!=pil)
-							{ fwrite(&add, sizeof(add), 1, datadel); } 
+							if (add3[o].jadwal!=pil)
+							{ fwrite(&add3[o], sizeof(add3[o]), 1, datadel); } 
 						} 
 						fclose(dataread); fclose(datadel); 
 						remove("stok.dat"); rename("stok2.dat","stok.dat"); 
 						
-						add.jadwal=pil; add.stok_mobil=mob; add.stok_motor=mot;
+						add2[i].jadwal=pil;
 						dataread = fopen("stok.dat","ab");
-						fwrite(&add,sizeof(add),1,dataread);
+						fwrite(&add2[i],sizeof(add2[i]),1,dataread);
 						fclose(dataread);
 						menu_admin(); break;
 					}
 					case 2 : 
 					{
 						printf("Ubah jumlah stok motor menjadi : ");
-						scanf("%d",&mot); mob=add.stok_mobil;
+						scanf("%d",&add2[i].stok_motor);
+						
 						datadel = fopen("stok2.dat", "wb");
-						fseek(dataread, 0, SEEK_SET);  
-						while (fread(&add,sizeof(add),1, dataread)==1)
+						fseek(dataread, 0, SEEK_SET); 
+						int o=0; 
+						while (fread(&add3[o],sizeof(add3[o]),1, dataread)==1)
 						{ 
-							if (add.jadwal!=pil)
-							{ fwrite(&add, sizeof(add), 1, datadel); } 
+							if (add3[o].jadwal!=pil)
+							{ fwrite(&add3[o], sizeof(add3[o]), 1, datadel); } 
 						} 
 						fclose(dataread); fclose(datadel); 
 						remove("stok.dat"); rename("stok2.dat","stok.dat"); 
 						
-						add.jadwal=pil; add.stok_mobil=mob; add.stok_motor=mot;
+						add2[i].jadwal=pil;
 						dataread = fopen("stok.dat","ab");
-						fwrite(&add,sizeof(add),1,dataread);
+						fwrite(&add2[i],sizeof(add2[i]),1,dataread);
 						fclose(dataread);
 						menu_admin(); break;
 					}
@@ -317,17 +408,30 @@ void menu_admin()
 			}
 			case 3:
 			{
+				int o=0;
 				system("cls");
 				printf("\t==================\n");
 				printf("\t   List Tersewa\n");
 				printf("\t===================\n\n");
 				dataread = fopen("data.dat", "rb");
-				i=0;
-				while(fread(&akun,sizeof(akun),1,dataread)==1)
+				while (fread(&data2[o],sizeof(data2[o]),1,dataread)==1)
+				{ o++; }
+				//Bubble Sort
+				for (i=o-1;i>=1;i--)
+				for (j=1;j<=i;j++)
+				{ 
+					if (data2[j-1].durasi>data2[j].durasi)
+					{
+						temp=data2[j-1];
+						data2[j-1]=data2[j];
+						data2[j]=temp;
+					} 
+				}
+				//Output Sorting
+				for(i=0;i<o;i++)
 				{
-					if(akun.status!=0)
-					{ printf("%d. Username '%s' menyewa %s sampai tanggal %d - %d - %d\n", i+1, akun.nama, akun.sewaan, akun.tanggal, akun.bulan, akun.tahun ); }
-					i++;
+					if(data2[i].status!=0)
+					{ printf("%d. Username '%s' menyewa %s sampai tanggal %d - %d - %d\n", i+1, data2[i].nama, data2[i].sewaan, data2[i].tanggal, data2[i].bulan, data2[i].tahun ); }
 				}
 				pause(); menu_admin(); break;
 			}
