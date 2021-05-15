@@ -58,8 +58,8 @@ void regis_user()
 	printf("\t===================\n");
     printf("\t  Registrasi Akun\n");
     printf("\t===================\n");
-	printf("\nUsername   : ");gets(akun.nama);
-	printf("Password   : ");gets(akun.pass);
+	printf("\nUsername\t: ");gets(akun.nama);
+	printf("Password\t: ");gets(akun.pass);
 	akun.status=0;
 	fwrite(&akun,sizeof(akun),1,dataread);
 	printf("\n\nAkun Berhasil dibuat !!!\n"); pause();
@@ -329,6 +329,8 @@ void menu_user()
 		default: printf("\nPilihan salah !!!, silahkan coba lagi\n\n"); pause(); menu_user(); break;
 	}
 }
+
+
 
 void login_admin()
 {
